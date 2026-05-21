@@ -186,7 +186,7 @@ st.markdown("""
 st.markdown('<div class="section-header">📋 Trip Details</div>', unsafe_allow_html=True)
 
 city = st.text_input("📍 Where are you planning to golf?", placeholder="e.g. Scottsdale, AZ")
-dates = st.text_input("📅 What dates?", placeholder="e.g. Oct 11-13")
+dates = st.text_input("📅 What are the dates of your trip?", placeholder="e.g. Oct 11-13")
 nights = st.number_input("🌙 How many nights?", min_value=1, max_value=7, value=2)
 golfers = st.text_input("👥 How many golfers?", placeholder="e.g. 4")
 
