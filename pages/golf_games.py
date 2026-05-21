@@ -5,6 +5,8 @@ st.set_page_config(
     page_icon="🏌️",
     layout="centered"
 )
+st.sidebar.page_link("app_golf_agent.py", label="⛳ Trip Planner")
+st.sidebar.page_link("pages/golf_games.py", label="🏌️ Gambling Games")
 
 # Same CSS as main app
 st.markdown("""
@@ -52,6 +54,7 @@ st.markdown("""
     }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    [data-testid="stSidebarNav"] {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
