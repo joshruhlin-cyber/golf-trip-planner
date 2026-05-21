@@ -1,0 +1,3 @@
+echo print("step 1") > golf_agent.py
+echo input("drive or fly? ") >> golf_agent.py
+echo print("step 2") >> golf_agent.py
