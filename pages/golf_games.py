@@ -54,7 +54,8 @@ st.markdown("""
     }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    [data-testid="stSidebarNav"] {display: none;}
+    [data-testid="stSidebarNav"] {display: none !important;}
+    section[data-testid="stSidebar"] > div > div > div > div:first-child {display: none !important;}
 </style>
 """, unsafe_allow_html=True)
 
