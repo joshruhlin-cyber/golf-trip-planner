@@ -10,28 +10,205 @@ import io
 
 load_dotenv()
 
+# Page config
+st.set_page_config(
+    page_title="Golf Trip Planner",
+    page_icon="⛳",
+    layout="centered"
+)
+
+# Custom CSS
+st.markdown("""
+<style>
+    /* Main background */
+    .stApp {
+        background-color: #f8faf8;
+    }
+    
+    /* Hero banner */
+    .hero {
+        background: linear-gradient(135deg, #1a5c2a 0%, #2d8a47 50%, #1a5c2a 100%);
+        padding: 40px 30px;
+        border-radius: 16px;
+        text-align: center;
+        margin-bottom: 30px;
+        color: white;
+    }
+    .hero h1 {
+        font-size: 2.4em;
+        font-weight: 800;
+        margin: 0;
+        color: white;
+    }
+    .hero p {
+        font-size: 1.1em;
+        opacity: 0.9;
+        margin-top: 10px;
+        color: white;
+    }
+
+    /* Section headers */
+    .section-header {
+        background: linear-gradient(90deg, #1a5c2a, #2d8a47);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-weight: 700;
+        margin: 25px 0 15px 0;
+    }
+
+    /* Cards */
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 5px solid #2d8a47;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .card h3 {
+        margin: 0 0 10px 0;
+        color: #1a5c2a;
+        font-size: 1.1em;
+    }
+    .card p {
+        margin: 4px 0;
+        color: #444;
+        font-size: 0.95em;
+    }
+
+    /* Metric cards */
+    .metric-card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        margin-bottom: 10px;
+    }
+    .metric-label {
+        font-size: 0.8em;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .metric-value {
+        font-size: 1.8em;
+        font-weight: 700;
+        color: #1a5c2a;
+    }
+
+    /* Form styling */
+    .stTextInput > div > div > input {
+        border-radius: 8px;
+        border: 1.5px solid #ddd;
+        padding: 10px;
+    }
+    .stTextInput > div > div > input:focus {
+        border-color: #2d8a47;
+    }
+
+    /* Button */
+    .stButton > button {
+        background: linear-gradient(135deg, #1a5c2a, #2d8a47);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 14px 28px;
+        font-size: 1.1em;
+        font-weight: 700;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #154d23, #267a3e);
+        transform: translateY(-1px);
+    }
+
+    /* Download button */
+    .stDownloadButton > button {
+        background: white;
+        color: #1a5c2a;
+        border: 2px solid #1a5c2a;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 1em;
+        font-weight: 600;
+        width: 100%;
+    }
+
+    /* Success box */
+    .success-box {
+        background: #e8f5e9;
+        border: 1.5px solid #2d8a47;
+        border-radius: 10px;
+        padding: 15px 20px;
+        text-align: center;
+        color: #1a5c2a;
+        font-weight: 600;
+        margin: 20px 0;
+    }
+
+    /* Divider */
+    .custom-divider {
+        border: none;
+        border-top: 2px solid #e8f5e9;
+        margin: 20px 0;
+    }
+
+    /* GolfNow link */
+    a {
+        color: #2d8a47 !important;
+        font-weight: 600;
+    }
+
+    /* Hide streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
+
+# Initialize clients
 tavily = TavilyClient(api_key=os.environ.get("TAVILY_API_KEY"))
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
-st.title("⛳ Golf Trip Planner")
-st.write("Fill out the details below and we'll build your full trip estimate.")
+# Hero section
+st.markdown("""
+<div class="hero">
+    <h1>⛳ Golf Trip Planner</h1>
+    <p>Enter your trip details and we'll build a complete cost estimate — courses, flights, hotels, and more.</p>
+</div>
+""", unsafe_allow_html=True)
 
-# Input fields
-city = st.text_input("Where are you planning to golf?")
-dates = st.text_input("What dates? (e.g. Oct 11-13)")
-nights = st.number_input("How many nights? (for hotel/accomodation estimates)", min_value=1, max_value=7, value=2)
-golfers = st.text_input("How many golfers?")
-transport = st.radio("Will you be driving or flying?", ["Drive", "Fly"])
+# Input section
+st.markdown('<div class="section-header">📋 Trip Details</div>', unsafe_allow_html=True)
+
+city = st.text_input("📍 Where are you planning to golf?", placeholder="e.g. Scottsdale, AZ")
+dates = st.text_input("📅 What dates?", placeholder="e.g. Oct 11-13")
+nights = st.number_input("🌙 How many nights?", min_value=1, max_value=7, value=2)
+golfers = st.text_input("👥 How many golfers?", placeholder="e.g. 4")
+
+st.markdown('<div class="section-header">✈️ Travel Preferences</div>', unsafe_allow_html=True)
+transport = st.radio("How are you getting there?", ["Drive", "Fly"], horizontal=True)
 departure = ""
 if transport == "Fly":
-    departure = st.text_input("What city are you flying from?")
-hotel = st.radio("Include hotel pricing?", ["Yes", "No"])
+    departure = st.text_input("🛫 What city are you flying from?", placeholder="e.g. Chicago, IL")
 
-if st.button("🔍 Plan My Trip"):
+st.markdown('<div class="section-header">🏨 Accommodations</div>', unsafe_allow_html=True)
+hotel = st.radio("Include hotel pricing?", ["Yes", "No"], horizontal=True)
+
+st.markdown("---")
+plan_button = st.button("⛳ Build My Golf Trip")
+
+if plan_button:
     if not city or not dates or not golfers:
-        st.error("Please fill out all fields before searching.")
+        st.error("⚠️ Please fill out all required fields before searching.")
     else:
-        with st.spinner("Building your trip..."):
+        # Golf search
+        st.markdown('<div class="section-header">⛳ Golf Courses</div>', unsafe_allow_html=True)
+        with st.spinner("🔍 Searching for the best courses..."):
             search1 = tavily.search(f"golf courses weekend green fees pricing {city} 2026")
             search2 = tavily.search(f"best public golf courses {city} tee times rates")
             search_text = "\n".join([r["content"] for r in search1["results"] + search2["results"]])
@@ -86,21 +263,26 @@ if st.button("🔍 Plan My Trip"):
         if current:
             courses.append(current)
 
-        # Display golf results
-        st.subheader("⛳ Golf Courses")
+        golfers_int = int(golfers)
         for course in courses:
-            golfers_int = int(golfers)
-            with st.expander(f"{course['name']}"):
-                st.write(f"**💰 Green Fee:** \\${course['low']}–\\${course['high']} per person")
-                st.write(f"**👥 Group total:** \\${course['low'] * golfers_int:,}–\\${course['high'] * golfers_int:,}")
-                st.write(course['desc'])
-                course_search = course['name'].replace(' ', '+')
-                golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
-                st.markdown(f"[⛳ Check Tee Times on GolfNow]({golfnow_url})")
+            course_search = course['name'].replace(' ', '+')
+            golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
+            st.markdown(f"""
+            <div class="card">
+                <h3>🏌️ {course['name']}</h3>
+                <p>💰 <strong>Green Fee:</strong> ${course['low']}–${course['high']} per person</p>
+                <p>👥 <strong>Group Total:</strong> ${course['low'] * golfers_int:,}–${course['high'] * golfers_int:,}</p>
+                <p>📝 {course['desc']}</p>
+                <p><a href="{golfnow_url}" target="_blank">⛳ Check Tee Times on GolfNow →</a></p>
+            </div>
+            """, unsafe_allow_html=True)
 
+        # Flights
         flight_info = ""
+        flight_data = {}
         if transport == "Fly" and departure:
-            with st.spinner("Searching for flights and rental cars..."):
+            st.markdown('<div class="section-header">✈️ Flights & Rental Car</div>', unsafe_allow_html=True)
+            with st.spinner("🔍 Searching for flights and rental cars..."):
                 flight_search = tavily.search(f"flights from {departure} to {city} {dates} 2026 price")
                 rental_search = tavily.search(f"rental car {city} airport {dates} 2026 average price")
                 flight_text = "\n".join([r["content"] for r in flight_search["results"]])
@@ -133,36 +315,30 @@ if st.button("🔍 Plan My Trip"):
                 )
                 flight_info = flight_message.content[0].text
 
-            flight_data = {}
             for line in flight_info.split("\n"):
                 for key in ["FLIGHT_LOW", "FLIGHT_HIGH", "RENTAL_LOW", "RENTAL_HIGH", "FLIGHT_DESC", "RENTAL_DESC"]:
                     if line.startswith(f"{key}:"):
                         flight_data[key] = line.replace(f"{key}:", "").strip()
 
-            st.subheader("✈️ Flights & Rental Car")
+            st.markdown(f"""
+            <div class="card">
+                <h3>✈️ Flights — {departure} to {city}</h3>
+                <p>💰 <strong>Per Person:</strong> ${flight_data.get('FLIGHT_LOW', 'N/A')}–${flight_data.get('FLIGHT_HIGH', 'N/A')} round trip</p>
+                <p>📝 {flight_data.get('FLIGHT_DESC', '').replace('$', '\\$')}</p>
+            </div>
+            <div class="card">
+                <h3>🚗 Rental Car</h3>
+                <p>💰 <strong>Total for Group:</strong> ${flight_data.get('RENTAL_LOW', 'N/A')}–${flight_data.get('RENTAL_HIGH', 'N/A')}</p>
+                <p>📝 {flight_data.get('RENTAL_DESC', '').replace('$', '\\$')}</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-            st.write("**✈️ Flights**")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Per person (low)", f"${flight_data.get('FLIGHT_LOW', 'N/A')}")
-            with col2:
-                st.metric("Per person (high)", f"${flight_data.get('FLIGHT_HIGH', 'N/A')}")
-            st.write(flight_data.get('FLIGHT_DESC', '').replace('$', '\\$'))
-
-            st.divider()
-            
-            st.write("**🚗 Rental Car**")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Total (low)", f"${flight_data.get('RENTAL_LOW', 'N/A')}")
-            with col2:
-                st.metric("Total (high)", f"${flight_data.get('RENTAL_HIGH', 'N/A')}")
-            st.write(flight_data.get('RENTAL_DESC', '').replace('$', '\\$'))
-
+        # Hotels
         hotel_info = ""
         hotels = []
         if hotel == "Yes":
-            with st.spinner("Searching for hotels..."):
+            st.markdown('<div class="section-header">🏨 Hotels</div>', unsafe_allow_html=True)
+            with st.spinner("🔍 Searching for hotels..."):
                 hotel_search = tavily.search(f"hotels near golf courses {city} {dates} price per night 2026")
                 hotel_text = "\n".join([r["content"] for r in hotel_search["results"]])
 
@@ -201,20 +377,25 @@ if st.button("🔍 Plan My Trip"):
             if current_hotel:
                 hotels.append(current_hotel)
 
-            st.subheader("🏨 Hotels")
             for h in hotels:
-                with st.expander(f"{h['name']}"):
-                    st.write(f"**💰 Room Rate:** \\${h.get('low', 'N/A')}–\\${h.get('high', 'N/A')} per night")
-                    try:
-                        nights = int(nights)
-                        low_total = int(h.get('low', 0)) * nights
-                        high_total = int(h.get('high', 0)) * nights
-                        st.write(f"**👥 Group total ({nights} nights):** \\${low_total:,}–\\${high_total:,}")
-                    except:
-                        pass
-                    st.write(h.get('desc', ''))
+                try:
+                    nights_int = int(nights)
+                    low_total = int(h.get('low', 0)) * nights_int
+                    high_total = int(h.get('high', 0)) * nights_int
+                    total_str = f"<p>👥 <strong>Total ({nights_int} nights):</strong> ${low_total:,}–${high_total:,}</p>"
+                except:
+                    total_str = ""
 
-        # Build and offer Excel download
+                st.markdown(f"""
+                <div class="card">
+                    <h3>🏨 {h['name']}</h3>
+                    <p>💰 <strong>Per Night:</strong> ${h.get('low', 'N/A')}–${h.get('high', 'N/A')}</p>
+                    {total_str}
+                    <p>📝 {h.get('desc', '')}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+        # Excel export
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Golf Trip"
@@ -233,7 +414,6 @@ if st.button("🔍 Plan My Trip"):
             cell.alignment = Alignment(horizontal="center")
 
         for row, course in enumerate(courses, 4):
-            golfers_int = int(golfers)
             ws.cell(row=row, column=1, value=course.get("name", ""))
             ws.cell(row=row, column=2, value=f"${course.get('low', 0)}")
             ws.cell(row=row, column=3, value=f"${course.get('high', 0)}")
@@ -281,14 +461,13 @@ if st.button("🔍 Plan My Trip"):
             col_letter = openpyxl.utils.get_column_letter(col_idx)
             ws.column_dimensions[col_letter].width = 60 if col_idx == 6 else (35 if col_idx == 1 else 20)
 
-        # Save to memory for download
         buffer = io.BytesIO()
         wb.save(buffer)
         buffer.seek(0)
 
-        st.success("✅ Trip plan complete!")
+        st.markdown('<div class="success-box">✅ Your golf trip plan is ready!</div>', unsafe_allow_html=True)
         st.download_button(
-            label="📥 Download Excel",
+            label="📥 Download Full Trip Report (Excel)",
             data=buffer,
             file_name=f"golf_trip_{city.replace(' ', '_')}_{dates.replace(' ', '_')}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
