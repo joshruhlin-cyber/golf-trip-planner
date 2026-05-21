@@ -17,8 +17,8 @@ st.set_page_config(
     layout="centered"
 )
 
-st.sidebar.page_link("app_golf_agent.py", label="⛳ Trip Planner")
-st.sidebar.page_link("pages/golf_games.py", label="🏌️ Gambling Games")
+st.sidebar.page_link("Trip_Planner.py", label="⛳ Trip Planner")
+st.sidebar.page_link("pages/Gambling_Games.py", label="🏌️ Gambling Games")
 
 # Custom CSS
 st.markdown("""
