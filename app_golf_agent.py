@@ -170,6 +170,7 @@ st.markdown("""
     /* Hide streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    [data-testid="stSidebarNav"] {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
