@@ -290,7 +290,7 @@ if plan_button:
         golfers_int = int(golfers)
         for course in courses:
             course_search = course['name'].replace(' ', '+')
-            golfnow_url = f"https://www.golfnow.com/tee-times/search?facilityId=0&facilityName={course_search}&searchType=facility"
+            golfnow_url = f"https://www.google.com/search?q={course_search}+GolfNow+tee+times"
             if course.get('resort', '').lower() == 'yes':
                 distance = course.get('distance', '')
                 distance_str = f" · ~{distance} miles from {city}" if distance else ""
@@ -304,7 +304,7 @@ if plan_button:
                 <p>💰 <strong>Green Fee:</strong> ${course['low']}–${course['high']} per person</p>
                 <p>👥 <strong>Group Total:</strong> ${course['low'] * golfers_int:,}–${course['high'] * golfers_int:,}</p>
                 <p>📝 {course['desc']}</p>
-                <p><a href="{golfnow_url}" target="_blank">⛳ Check Tee Times on GolfNow →</a></p>
+                <p><a href="{golfnow_url}" target="_blank">⛳ Find Tee Times on GolfNow →</a></p>
             </div>
             """
             st.markdown(card_html, unsafe_allow_html=True)
