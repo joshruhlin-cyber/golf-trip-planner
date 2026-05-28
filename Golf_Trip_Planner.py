@@ -225,15 +225,20 @@ if plan_button:
 
             Please provide exactly 5 golf courses with the following info for each:
             - Course name
+            - City and state where the course is located
             - Weekend green fee per person (low estimate)
             - Weekend green fee per person (high estimate)
             - One sentence description
 
+            One of the 5 courses MUST be a resort or destination with multiple courses where a group can stay and play on the property for the whole weekend. It does not need to be near {city} - it can be in the state. 
+
             Format your response exactly like this for each course:
             COURSE: [name]
+            LOCATION: [city, state]
             LOW: [number only]
             HIGH: [number only]
             DESC: [one sentence]
+            RESORT: [yes or no - is this a multi-course stay and play resort?]
             """
 
             message = client.messages.create(
@@ -252,6 +257,8 @@ if plan_button:
                 if current:
                     courses.append(current)
                 current = {"name": line.replace("COURSE:", "").strip()}
+            elif line.startswith("LOCATION:"):
+                current["location"] = line.replace("LOCATION:", "").strip()
             elif line.startswith("LOW:"):
                 try:
                     current["low"] = int(line.replace("LOW:", "").strip())
@@ -264,6 +271,8 @@ if plan_button:
                     current["high"] = 0
             elif line.startswith("DESC:"):
                 current["desc"] = line.replace("DESC:", "").strip()
+            elif line.startswith("RESORT:"):
+                current["resort"] = line.replace("RESORT:", "").strip()
         if current:
             courses.append(current)
 
@@ -273,7 +282,8 @@ if plan_button:
             golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
             st.markdown(f"""
             <div class="card">
-                <h3>🏌️ {course['name']}</h3>
+                <h3>🏌️ {course['name']} {resort_badge}</h3>
+                <p>📍 <strong>Location:</strong> {course.get('location', '')}<p>
                 <p>💰 <strong>Green Fee:</strong> ${course['low']}–${course['high']} per person</p>
                 <p>👥 <strong>Group Total:</strong> ${course['low'] * golfers_int:,}–${course['high'] * golfers_int:,}</p>
                 <p>📝 {course['desc']}</p>
