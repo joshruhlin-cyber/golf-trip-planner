@@ -196,7 +196,7 @@ if city:
     city_clean = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=50,
-        messages=[{role: "user", "content": f"Extract only the city name from this input, no state or country: '{city}'. Reply with just the city name, nothing else"}]
+        messages=[{"role: "user", "content": f"Extract only the city name from this input, no state or country: '{city}'. Reply with just the city name, nothing else"}]
     )
     city = city_clean.content[0].text.strip()
 dates = st.text_input("📅 What are the dates of your trip?", placeholder="e.g. Oct 11-13")
