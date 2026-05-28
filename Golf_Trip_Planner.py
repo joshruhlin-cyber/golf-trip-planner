@@ -293,7 +293,7 @@ if plan_button:
             golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
             if course.get('resort', '').lower() == 'yes':
                 distance = course.get('distance', '')
-                distance_str = f" · ~{distance} miles away" if distance else ""
+                distance_str = f" · ~{distance} miles from {city}" if distance else ""
                 resort_badge = f'<span style="background:#1a5c2a;color:white;border-radius:20px;padding:3px 10px;font-size:0.8em;font-weight:600;">&#127968; Stay & Play{distance_str}</span>'
             else:
                 resort_badge = ''
