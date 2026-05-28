@@ -290,7 +290,7 @@ if plan_button:
         golfers_int = int(golfers)
         for course in courses:
             course_search = course['name'].replace(' ', '+')
-            golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
+            golfnow_url = f"https://www.golfnow.com/tee-times/search?facilityId=0&facilityName={course_search}&searchType=facility"
             if course.get('resort', '').lower() == 'yes':
                 distance = course.get('distance', '')
                 distance_str = f" · ~{distance} miles from {city}" if distance else ""
