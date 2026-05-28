@@ -190,7 +190,15 @@ st.markdown("""
 st.markdown('<div class="section-header">📋 Trip Details</div>', unsafe_allow_html=True)
 
 city = st.text_input("📍 Where are you planning to golf?", placeholder="e.g. Scottsdale, AZ")
-dates = st.text_input("📅 What are the dates of your trip?", placeholder="e.g. Oct 11-13")
+if dates:
+    try:
+        parts = dates.replace('–', '-').replace('—', '-').split('-')
+        nights_int = abs(int(parts[-1].strip()) - int(parts[0].strip().split()[-1]))
+        if nights_int == 0:
+            nights_int = 2
+        st.markdown(f"*🌙 {nights_int} nights*")
+    except:
+        st.markdown("*Enter dates in format: Oct 11-13*")
 golfers = st.text_input("👥 How many golfers?", placeholder="e.g. 4")
 
 st.markdown('<div class="section-header">✈️ Travel Preferences</div>', unsafe_allow_html=True)
