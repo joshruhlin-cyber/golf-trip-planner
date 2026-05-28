@@ -192,6 +192,9 @@ st.markdown('<div class="section-header">📋 Trip Details</div>', unsafe_allow_
 city = st.text_input("📍 Where are you planning to golf?", placeholder="e.g. Scottsdale, AZ")
 if city:
     city = city.title()
+    # Remove state if included
+    city_parts = city.split(',')
+    city = city_parts[0].strip()
 dates = st.text_input("📅 What are the dates of your trip?", placeholder="e.g. Oct 11-13")
 if dates:
     try:
