@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 st.sidebar.page_link("Golf_Trip_Planner.py", label="⛳ Trip Planner")
-st.sidebar.page_link("pages/Gambling_Golf_Games.py", label="🏌️ Gambling Games")
+st.sidebar.page_link("pages/Gambling_Golf_Games.py", label="🏌️ Golf Games")
 
 # Custom CSS
 st.markdown("""
