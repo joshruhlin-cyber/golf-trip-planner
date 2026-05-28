@@ -191,7 +191,6 @@ st.markdown('<div class="section-header">📋 Trip Details</div>', unsafe_allow_
 
 city = st.text_input("📍 Where are you planning to golf?", placeholder="e.g. Scottsdale, AZ")
 dates = st.text_input("📅 What are the dates of your trip?", placeholder="e.g. Oct 11-13")
-nights = st.number_input("🌙 How many nights?", min_value=1, max_value=7, value=2)
 golfers = st.text_input("👥 How many golfers?", placeholder="e.g. 4")
 
 st.markdown('<div class="section-header">✈️ Travel Preferences</div>', unsafe_allow_html=True)
@@ -280,16 +279,21 @@ if plan_button:
         for course in courses:
             course_search = course['name'].replace(' ', '+')
             golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
-            st.markdown(f"""
+            if course.get('resort', '').lower() == 'yes':
+                resort_badge = '<span style="background:#1a5c2a;color:white;border-radius:20px;padding:3px 10px;font-size:0.8em;font-weight:600;">&#127968; Stay & Play</span>'
+            else:
+                resort_badge = ''
+            card_html = f"""
             <div class="card">
                 <h3>🏌️ {course['name']} {resort_badge}</h3>
-                <p>📍 <strong>Location:</strong> {course.get('location', '')}<p>
+                <p>📍 <strong>Location:</strong> {course.get('location', '')}</p>
                 <p>💰 <strong>Green Fee:</strong> ${course['low']}–${course['high']} per person</p>
                 <p>👥 <strong>Group Total:</strong> ${course['low'] * golfers_int:,}–${course['high'] * golfers_int:,}</p>
                 <p>📝 {course['desc']}</p>
                 <p><a href="{golfnow_url}" target="_blank">⛳ Check Tee Times on GolfNow →</a></p>
             </div>
-            """, unsafe_allow_html=True)
+            """
+            st.markdown(card_html, unsafe_allow_html=True)
 
         # Flights
         flight_info = ""
@@ -393,7 +397,14 @@ if plan_button:
 
             for h in hotels:
                 try:
-                    nights_int = int(nights)
+                    from datetime import datetime
+                    try:
+                        parts = dates.replace('–', '-').replace('—', '-').split('-')
+                        nights_int = abs(int(parts[-1].strip()) - int(parts[0].strip().split()[-1]))
+                        if nights_int == 0:
+                            nights_int = 2
+                    except:
+                        nights_int = 2
                     low_total = int(h.get('low', 0)) * nights_int
                     high_total = int(h.get('high', 0)) * nights_int
                     total_str = f"<p>👥 <strong>Total ({nights_int} nights):</strong> ${low_total:,}–${high_total:,}</p>"
