@@ -247,6 +247,7 @@ if plan_button:
             HIGH: [number only]
             DESC: [one sentence]
             RESORT: [yes or no - is this a multi-course stay and play resort?]
+            DISTANCE: [if RESORT is yes, approximate miles from {city} to the resort location, number only. If RESORT is no, leave blank]
             """
 
             message = client.messages.create(
@@ -281,6 +282,8 @@ if plan_button:
                 current["desc"] = line.replace("DESC:", "").strip()
             elif line.startswith("RESORT:"):
                 current["resort"] = line.replace("RESORT:", "").strip()
+            elif line.startswith("DISTANCE:"):
+                current["distance"] = line.replace("DISTANCE:", "").strip()
         if current:
             courses.append(current)
 
@@ -289,7 +292,9 @@ if plan_button:
             course_search = course['name'].replace(' ', '+')
             golfnow_url = f"https://www.golfnow.com/tee-times/search#search/facility-name={course_search}"
             if course.get('resort', '').lower() == 'yes':
-                resort_badge = '<span style="background:#1a5c2a;color:white;border-radius:20px;padding:3px 10px;font-size:0.8em;font-weight:600;">&#127968; Stay & Play</span>'
+                distance = course.get('distance', '')
+                distance_str = f" · ~{distance} miles away" if distance else ""
+                resort_badge = f'<span style="background:#1a5c2a;color:white;border-radius:20px;padding:3px 10px;font-size:0.8em;font-weight:600;">&#127968; Stay & Play{distance_str}</span>'
             else:
                 resort_badge = ''
             card_html = f"""
