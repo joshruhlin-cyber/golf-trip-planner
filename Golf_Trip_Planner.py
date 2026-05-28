@@ -192,9 +192,13 @@ st.markdown('<div class="section-header">📋 Trip Details</div>', unsafe_allow_
 city = st.text_input("📍 Where are you planning to golf?", placeholder="e.g. Scottsdale, AZ")
 if city:
     city = city.title()
-    # Remove state if included
-    city_parts = city.split(',')
-    city = city_parts[0].strip()
+    # Use Claude to extract just the city name
+    city_clean = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=50,
+        messages=[{role: "user", "content": f"Extract only the city name from this input, no state or country: '{city}'. Reply with just the city name, nothing else"}]
+    )
+    city = city_clean.content[0].text.strip()
 dates = st.text_input("📅 What are the dates of your trip?", placeholder="e.g. Oct 11-13")
 if dates:
     try:
