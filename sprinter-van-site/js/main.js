@@ -98,6 +98,21 @@ const VANS = [
   }
 ];
 
+// Photos of past builds/sales — shown in the "Our Work" gallery, not tied
+// to a specific current listing. Add new photos to images/gallery/ and add
+// an entry here.
+const GALLERY = [
+  { src: "images/gallery/IMG_7421.jpg", caption: "4x4 conversion, out on the road" },
+  { src: "images/gallery/IMG_7427.jpg", caption: "4x4 build, out exploring" },
+  { src: "images/gallery/IMG_7423.jpg", caption: "4x4 build ready for the trail" },
+  { src: "images/gallery/IMG_7420.jpg", caption: "Bed, kitchenette & custom accent paneling" },
+  { src: "images/gallery/IMG_7422.jpg", caption: "Full kitchen, bed & LED lighting" },
+  { src: "images/gallery/IMG_7419.jpg", caption: "Bench seating & fold-out table" },
+  { src: "images/gallery/IMG_7425.jpg", caption: "4x4 conversion, custom interior" },
+  { src: "images/gallery/IMG_7426.jpg", caption: "4x4 conversion at golden hour" },
+  { src: "images/gallery/IMG_7424.jpg", caption: "Rear ladder & spare tire mount" }
+];
+
 const REVIEWS = [
   {
     name: "Megan T.",
@@ -235,6 +250,24 @@ function renderReviews() {
   REVIEWS.forEach(review => grid.appendChild(renderReviewCard(review)));
 }
 
+function renderGallery() {
+  const grid = document.getElementById("gallery-grid");
+  grid.innerHTML = "";
+  GALLERY.forEach((item, idx) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "gallery-item";
+    btn.dataset.index = idx;
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = item.caption;
+    img.loading = "lazy";
+    attachImageFallback(img, item.caption);
+    btn.appendChild(img);
+    grid.appendChild(btn);
+  });
+}
+
 function populateVanSelect() {
   const select = document.getElementById("van-interest");
   VANS.forEach(van => {
@@ -327,6 +360,54 @@ document.getElementById("van-grid").addEventListener("click", (e) => {
 });
 
 /* =========================================================================
+   GALLERY LIGHTBOX
+   ========================================================================= */
+
+const lightboxOverlay = document.getElementById("gallery-lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const lightboxCaption = document.getElementById("lightbox-caption");
+let lightboxIndex = 0;
+
+function showLightboxItem(idx) {
+  lightboxIndex = (idx + GALLERY.length) % GALLERY.length;
+  const item = GALLERY[lightboxIndex];
+  lightboxImg.src = item.src;
+  lightboxImg.alt = item.caption;
+  attachImageFallback(lightboxImg, item.caption);
+  lightboxCaption.textContent = item.caption;
+}
+
+function openLightbox(idx) {
+  showLightboxItem(idx);
+  lightboxOverlay.hidden = false;
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  lightboxOverlay.hidden = true;
+  document.body.style.overflow = "";
+}
+
+document.getElementById("gallery-grid").addEventListener("click", (e) => {
+  const btn = e.target.closest(".gallery-item");
+  if (!btn) return;
+  openLightbox(Number(btn.dataset.index));
+});
+
+document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+document.getElementById("lightbox-prev").addEventListener("click", () => showLightboxItem(lightboxIndex - 1));
+document.getElementById("lightbox-next").addEventListener("click", () => showLightboxItem(lightboxIndex + 1));
+lightboxOverlay.addEventListener("click", (e) => {
+  if (e.target === lightboxOverlay) closeLightbox();
+});
+document.addEventListener("keydown", (e) => {
+  if (lightboxOverlay.hidden) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowLeft") showLightboxItem(lightboxIndex - 1);
+  if (e.key === "ArrowRight") showLightboxItem(lightboxIndex + 1);
+});
+
+/* =========================================================================
    FILTER BAR
    ========================================================================= */
 
@@ -385,5 +466,6 @@ document.getElementById("contact-form").addEventListener("submit", (e) => {
 
 document.getElementById("year").textContent = new Date().getFullYear();
 renderVans();
+renderGallery();
 renderReviews();
 populateVanSelect();

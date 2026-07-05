@@ -21,6 +21,7 @@
 
     <nav class="main-nav" id="main-nav">
       <a href="#inventory">Inventory</a>
+      <a href="#past-work">Our Work</a>
       <a href="#reviews">Reviews</a>
       <a href="#how-it-works">Why Us</a>
       <a href="#contact">Contact</a>
@@ -78,6 +79,20 @@
 
       <div class="van-grid" id="van-grid">
         <!-- Van cards are rendered by js/main.js from the VANS data array -->
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="past-work">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Our Work</p>
+        <h2>A look at past builds we've sold</h2>
+        <p class="section-sub">A sample of vans and conversions that have come through the shop — real builds, real customers.</p>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Populated by js/main.js from the GALLERY data array -->
       </div>
     </div>
   </section>
@@ -214,6 +229,14 @@
     <p class="footer-copy">&copy; <span id="year"></span> Ruhlin Sprinter Vans. All rights reserved.</p>
   </div>
 </footer>
+
+<div class="modal-overlay lightbox-overlay" id="gallery-lightbox" hidden>
+  <button class="modal-close" id="lightbox-close" aria-label="Close">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">&#8249;</button>
+  <img class="lightbox-img" id="lightbox-img" alt="">
+  <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">&#8250;</button>
+  <p class="lightbox-caption" id="lightbox-caption"></p>
+</div>
 
 <div class="modal-overlay" id="van-modal" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
