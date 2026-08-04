@@ -1,7 +1,7 @@
-# Ruhlin Sprinter Vans — Website
+# Vandwellerz — Website
 
 A self-contained static website (plain HTML/CSS/JS, no build step) for listing
-Mercedes Sprinter vans for sale.
+Mercedes Sprinter vans for sale. Live domain: vandwellerz.com.
 
 ## Running it locally
 
@@ -76,18 +76,30 @@ replace them with your real contact info.
 
 ## Contact form
 
-The contact form on the page currently only validates input and shows a
-confirmation message in the browser — it does not send an email anywhere
-yet. To make it actually deliver messages, the easiest options are:
+The contact form is wired up for **Netlify Forms** (`data-netlify="true"` on
+the `<form>` in `index.html`, plus a honeypot spam field). This only works
+once the site is actually deployed on Netlify — Netlify's build step scans
+the deployed HTML for the `data-netlify` form and auto-creates a backend for
+it, no server code required. Submissions show up in your Netlify dashboard
+under Site → Forms, and you can turn on email notifications there.
 
-- **Formspree** (formspree.io) — add their form action URL, no backend needed.
-- **Netlify Forms** — if you host on Netlify, add `data-netlify="true"` to the `<form>`.
-- A simple backend endpoint of your own, if you'd rather handle it yourself.
+Running the site anywhere else (locally, GitHub Pages, another host) means
+the form's fetch call will fail and show the "something went wrong" message
+instead — that's expected off of Netlify.
 
-Ask if you'd like this wired up to one of these.
+## Deploying to Netlify with vandwellerz.com
 
-## Deploying
+1. Push this code to a GitHub repo (root of the repo should be this
+   folder's contents — `index.html` at the repo root, not nested).
+2. On [netlify.com](https://netlify.com), **Add new site → Import an
+   existing project**, authorize GitHub, and pick the repo. No build
+   command is needed and no publish directory override — it's static HTML.
+3. Once deployed, go to **Site configuration → Domain management → Add a
+   custom domain**, enter `vandwellerz.com`, and follow Netlify's
+   instructions to either point your domain's nameservers at Netlify or add
+   the DNS records it gives you at your domain registrar. Netlify issues a
+   free SSL certificate automatically once DNS is pointed correctly.
+4. Confirm **Site configuration → Forms** shows the `contact` form after
+   your first deploy — that's how you'll know Netlify Forms picked it up.
 
-Since this is a static site with no build step, you can host it on GitHub
-Pages, Netlify, Vercel, or any static file host by pointing it at this
-`sprinter-van-site/` folder.
+From then on, every push to the repo's main branch auto-deploys.

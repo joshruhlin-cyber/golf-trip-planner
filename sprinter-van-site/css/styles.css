@@ -443,6 +443,7 @@ ul { list-style: none; margin: 0; padding: 0; }
   flex-direction: column;
   gap: 16px;
 }
+.form-honeypot { position: absolute; left: -9999px; }
 .form-row { display: flex; flex-direction: column; gap: 6px; }
 .form-row label { font-size: 0.85rem; font-weight: 600; color: var(--color-ink-soft); }
 .form-row input, .form-row select, .form-row textarea {

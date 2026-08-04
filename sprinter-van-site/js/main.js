@@ -154,7 +154,7 @@ const REVIEWS = [
     location: "Flagstaff, AZ",
     rating: 5,
     vanPurchased: "2022 Sprinter 4x4",
-    quote: "Fair pricing, zero pressure, and a genuinely nice guy to deal with. This was my second van purchase from Ruhlin Sprinter Vans and it won't be my last."
+    quote: "Fair pricing, zero pressure, and a genuinely nice guy to deal with. This was my second van purchase from Vandwellerz and it won't be my last."
   }
 ];
 
@@ -439,9 +439,12 @@ mainNav.querySelectorAll("a").forEach(link => {
 });
 
 /* =========================================================================
-   CONTACT FORM (static — no backend wired up yet)
-   See images/README.md / project README for how to connect this to a
-   real form service (Formspree, Netlify Forms, etc.) or your own backend.
+   CONTACT FORM
+   Submits to Netlify Forms (see the data-netlify attribute on the <form>
+   in index.html). Works automatically once this site is deployed on
+   Netlify — no backend code needed. Submitting from anywhere else (e.g.
+   opening index.html directly, or a non-Netlify host) will just fail the
+   fetch and show an error message instead.
    ========================================================================= */
 
 document.getElementById("contact-form").addEventListener("submit", (e) => {
@@ -455,9 +458,19 @@ document.getElementById("contact-form").addEventListener("submit", (e) => {
     return;
   }
 
-  note.classList.remove("is-error");
-  note.textContent = "Thanks — your message has been noted. We'll be in touch within one business day.";
-  form.reset();
+  const body = new URLSearchParams(new FormData(form)).toString();
+
+  fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body })
+    .then((res) => {
+      if (!res.ok) throw new Error("Submission failed");
+      note.classList.remove("is-error");
+      note.textContent = "Thanks — your message has been sent. We'll be in touch within one business day.";
+      form.reset();
+    })
+    .catch(() => {
+      note.classList.add("is-error");
+      note.textContent = "Something went wrong sending that — please call or email us directly.";
+    });
 });
 
 /* =========================================================================
